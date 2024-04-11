@@ -74,7 +74,7 @@ def deleteInfo(table, params): # functions for deleting data into tables in the 
         cursor.execute("DELETE FROM customerLogin WHERE CustomerId = %s" , params)
         db.commit()
     elif table == 'reservations': # delete from table reservations
-        cursor.execute("DELETE FROM reservations WHERE CustomerId = %s", params)
+        cursor.execute("DELETE FROM reservations WHERE idReservation = %s", params)
         db.commit()
 
 
@@ -215,7 +215,7 @@ class RequestHandler(BaseHTTPRequestHandler):
             customer = json.loads(self.rfile.read(get_content_length))
 
             try:
-                updateInfo('customerLogin', (customer['CustomerId'], str(customer['Email']), str(customer['customerPassword'])))
+                updateInfo('customerLogin', (str(customer['Email']), str(customer['customerPassword']), customer['CustomerId']))
                 response_data = {'success' : True}
 
             except Exception as e:
@@ -229,7 +229,7 @@ class RequestHandler(BaseHTTPRequestHandler):
             customer = json.loads(self.rfile.read(get_content_length))
 
             try:
-                updateInfo('reservations', (customer['CustomerId'], customer['TableId'], customer['ReservationDate'], customer['ReservationStatus']))
+                updateInfo('reservations', (customer['TableId'], customer['ReservationDate'], customer['ReservationStatus'], customer['CustomerId']))
                 response_data = {'success' : True}
 
             except Exception as e:
@@ -262,7 +262,7 @@ class RequestHandler(BaseHTTPRequestHandler):
             customer = json.loads(self.rfile.read(get_content_length))
 
             try:
-                deleteInfo('customerLogin', (customer['CustomerId']))
+                deleteInfo('customerLogin', (customer['CustomerId'],))
                 response_data = {'success' : True}
 
             except Exception as e:
@@ -276,7 +276,7 @@ class RequestHandler(BaseHTTPRequestHandler):
             customer = json.loads(self.rfile.read(get_content_length))
 
             try:
-                deleteInfo('reservations', (customer['CustomerId']))
+                deleteInfo('reservations', (customer['idReservation'],))
                 response_data = {'success' : True}
 
             except Exception as e:
