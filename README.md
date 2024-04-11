@@ -20,7 +20,7 @@ To try this system:
 
 Another way of testing the System is by using an extension in VSCodes "Thunder Client".
 You can easily choose either GET, POST, PUT and DELETE options.
-The fetch URL will be the same ** http://localhost:8080/customers**, this request will get all customer registered with some information
+The fetch URL will be the same http://localhost:8080/customers, this request will get all customer registered with some information
 If you want to try other requests, simply change the endpoint to the request you wish to test.
 
 I used Jira, for my scrum, sprints, used case, and acceptance criteria:
