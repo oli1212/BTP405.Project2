@@ -1,6 +1,7 @@
 from http.server import HTTPServer, BaseHTTPRequestHandler
 import json
 import mysql.connector
+import re
 
 db = mysql.connector.connect(
     host="127.0.0.1",
@@ -11,6 +12,16 @@ db = mysql.connector.connect(
 )
 cursor = db.cursor()
 
+regex = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,7}\b'
+
+def check(email):
+    if (re.fullmatch(regex, email)):
+        print("Valid Email")
+        return True
+    
+    else:
+        print("Invalid Email")
+        return False
 
 def getAllCustomers():# get all customers query
     cursor.execute("SELECT * FROM customer")
@@ -153,10 +164,13 @@ class RequestHandler(BaseHTTPRequestHandler):
                 if rowExist:
                     response_data = {'success': False, 'message': 'Email is already used'}
                 else:
-                    insertInfo('customer', (customer['Birthday'], customer['FirstName'], customer['Surname'], customer['Email'],))
-                    customerID = getCustomerIdByEmail((customer['Email'],))
-                    insertInfo('customerLogin', (customerID[0], customer['Email'], customer['customerPassword']))
-                    response_data = {'success' : True}
+                    if check(customer['Email'],):
+                        insertInfo('customer', (customer['Birthday'], customer['FirstName'], customer['Surname'], customer['Email'],))
+                        customerID = getCustomerIdByEmail((customer['Email'],))
+                        insertInfo('customerLogin', (customerID[0], customer['Email'], customer['customerPassword']))
+                        response_data = {'success' : True}
+                    else:
+                        response_data = {'success' : False, 'error': "Email is not valid"}
 
             except Exception as e:
                 response_data = {'success': False, 'error': str(e)}
